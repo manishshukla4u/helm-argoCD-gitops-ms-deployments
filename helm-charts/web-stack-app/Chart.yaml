@@ -1,0 +1,6 @@
+apiVersion: v2
+name: web-stack-app
+description: A 3-tier microservice application with frontend, backend, and MongoDB
+type: application
+version: 0.1.0
+appVersion: "1.0"
