@@ -1,0 +1,24 @@
+frontend:
+  image: nginx:latest
+  replicas: 1
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    host: dev-frontend.local
+
+backend:
+  image: node:18
+  replicas: 1
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    host: dev-backend.local
+  env:
+    MONGO_URL: mongodb://mongodb-0.mongodb.default.svc.cluster.local:27017
+
+mongodb:
+  image: mongo:6.0
+  replicas: 1
+  storage: 512Mi

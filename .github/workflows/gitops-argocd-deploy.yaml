@@ -1,0 +1,63 @@
+name: GitOps Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'helm-charts/**'
+      - 'values/**'
+
+jobs:
+  build-and-push-images:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: v1.0.${{ github.run_number }}
+      DOCKER_REGISTRY: manishshukla
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login $DOCKER_REGISTRY -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Pull, tag, and push images
+        run: |
+          docker pull nginx:latest
+          docker tag nginx:latest $DOCKER_REGISTRY/frontend:$VERSION
+          docker push $DOCKER_REGISTRY/frontend:$VERSION
+
+          docker pull node:18
+          docker tag node:18 $DOCKER_REGISTRY/backend:$VERSION
+          docker push $DOCKER_REGISTRY/backend:$VERSION
+
+          docker pull mongo:6.0
+          docker tag mongo:6.0 $DOCKER_REGISTRY/mongodb:$VERSION
+          docker push $DOCKER_REGISTRY/mongodb:$VERSION
+
+  update-values:
+    runs-on: ubuntu-latest
+    needs: build-and-push-images
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install yq
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
+      - name: Update image tags in values.yaml
+        run: |
+          yq -i '.frontend.image = "${{ env.DOCKER_REGISTRY }}/frontend:${{ env.VERSION }}"' values.yaml
+          yq -i '.backend.image = "${{ env.DOCKER_REGISTRY }}/backend:${{ env.VERSION }}"' values.yaml
+          yq -i '.mongodb.image = "${{ env.DOCKER_REGISTRY }}/mongodb:${{ env.VERSION }}"' values.yaml
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitOps Bot"
+          git config user.email "gitops@example.com"
+          git add values.yaml
+          git commit -m "Update image tags to $VERSION"
+          git push
