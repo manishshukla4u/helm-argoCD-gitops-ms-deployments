@@ -59,3 +59,4 @@ jobs:
           git add values.yaml
           git commit -m "Update image tags to $VERSION"
           git push
+
