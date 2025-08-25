@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - test
       - main
 
 jobs:
@@ -11,27 +12,27 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: v1.0.${{ github.run_number }}
-      DOCKER_REGISTRY: manishshukla
+      DOCKER_NAMESPACE: manishshukla
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Pull, tag, and push images
         run: |
           docker pull nginx:latest
-          docker tag nginx:latest $DOCKER_REGISTRY/frontend:$VERSION
-          docker push $DOCKER_REGISTRY/frontend:$VERSION
+          docker tag nginx:latest $DOCKER_NAMESPACE/frontend:$VERSION
+          docker push $DOCKER_NAMESPACE/frontend:$VERSION
 
           docker pull node:18
-          docker tag node:18 $DOCKER_REGISTRY/backend:$VERSION
-          docker push $DOCKER_REGISTRY/backend:$VERSION
+          docker tag node:18 $DOCKER_NAMESPACE/backend:$VERSION
+          docker push $DOCKER_NAMESPACE/backend:$VERSION
 
           docker pull mongo:6.0
-          docker tag mongo:6.0 $DOCKER_REGISTRY/mongodb:$VERSION
-          docker push $DOCKER_REGISTRY/mongodb:$VERSION
+          docker tag mongo:6.0 $DOCKER_NAMESPACE/mongodb:$VERSION
+          docker push $DOCKER_NAMESPACE/mongodb:$VERSION
 
   update-values:
     runs-on: ubuntu-latest
@@ -47,9 +48,9 @@ jobs:
 
       - name: Update image tags in values.yaml
         run: |
-          yq -i '.frontend.image = "${{ env.DOCKER_REGISTRY }}/frontend:${{ env.VERSION }}"' values.yaml
-          yq -i '.backend.image = "${{ env.DOCKER_REGISTRY }}/backend:${{ env.VERSION }}"' values.yaml
-          yq -i '.mongodb.image = "${{ env.DOCKER_REGISTRY }}/mongodb:${{ env.VERSION }}"' values.yaml
+          yq -i '.frontend.image = "${{ env.DOCKER_NAMESPACE }}/frontend:${{ env.VERSION }}"' values.yaml
+          yq -i '.backend.image = "${{ env.DOCKER_NAMESPACE }}/backend:${{ env.VERSION }}"' values.yaml
+          yq -i '.mongodb.image = "${{ env.DOCKER_NAMESPACE }}/mongodb:${{ env.VERSION }}"' values.yaml
 
       - name: Commit and push changes
         run: |
