@@ -46,7 +46,7 @@ jobs:
           sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
           sudo chmod +x /usr/bin/yq
 
-      - name: Determine environment and update values.yam
+      - name: Determine environment and update values.yaml
         run: |
             if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
               VALUES_FILE="values/prod/values.yaml"
