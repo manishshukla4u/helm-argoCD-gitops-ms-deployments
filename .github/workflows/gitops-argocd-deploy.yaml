@@ -46,11 +46,17 @@ jobs:
           sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
           sudo chmod +x /usr/bin/yq
 
-      - name: Update image tags in values.yaml
+      - name: Determine environment and update values.yam
         run: |
-          yq -i '.frontend.image = "${{ env.DOCKER_NAMESPACE }}/frontend:${{ env.VERSION }}"' values/values.yaml
-          yq -i '.backend.image = "${{ env.DOCKER_NAMESPACE }}/backend:${{ env.VERSION }}"' values/values.yaml
-          yq -i '.mongodb.image = "${{ env.DOCKER_NAMESPACE }}/mongodb:${{ env.VERSION }}"' values/values.yaml
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              VALUES_FILE="values/prod/values.yaml"
+            else
+              VALUES_FILE="values/dev/values.yaml"
+            fi
+
+            yq -i '.frontend.image = "${{ env.DOCKER_NAMESPACE }}/frontend:${{ env.VERSION }}"' $VALUES_FILE
+            yq -i '.backend.image = "${{ env.DOCKER_NAMESPACE }}/backend:${{ env.VERSION }}"' $VALUES_FILE
+            yq -i '.mongodb.image = "${{ env.DOCKER_NAMESPACE }}/mongodb:${{ env.VERSION }}"' $VALUES_FILE
 
       - name: Commit and push changes
         run: |
