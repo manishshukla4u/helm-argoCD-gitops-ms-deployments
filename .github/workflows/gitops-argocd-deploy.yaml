@@ -48,9 +48,9 @@ jobs:
 
       - name: Update image tags in values.yaml
         run: |
-          yq -i '.frontend.image = "${{ env.DOCKER_NAMESPACE }}/frontend:${{ env.VERSION }}"' values.yaml
-          yq -i '.backend.image = "${{ env.DOCKER_NAMESPACE }}/backend:${{ env.VERSION }}"' values.yaml
-          yq -i '.mongodb.image = "${{ env.DOCKER_NAMESPACE }}/mongodb:${{ env.VERSION }}"' values.yaml
+          yq -i '.frontend.image = "${{ env.DOCKER_NAMESPACE }}/frontend:${{ env.VERSION }}"' values/values.yaml
+          yq -i '.backend.image = "${{ env.DOCKER_NAMESPACE }}/backend:${{ env.VERSION }}"' values/values.yaml
+          yq -i '.mongodb.image = "${{ env.DOCKER_NAMESPACE }}/mongodb:${{ env.VERSION }}"' values/values.yaml
 
       - name: Commit and push changes
         run: |
