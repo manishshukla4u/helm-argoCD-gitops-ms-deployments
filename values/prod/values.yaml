@@ -1,14 +1,13 @@
 frontend:
-  image: nginx:latest
+  image: manishshukla/frontend:v1.0.54
   replicas: 2
   service:
     type: ClusterIP
   ingress:
     enabled: true
     host: prod-frontend.local
-
 backend:
-  image: node:18
+  image: manishshukla/backend:v1.0.54
   replicas: 2
   service:
     type: ClusterIP
@@ -17,8 +16,7 @@ backend:
     host: prod-backend.local
   env:
     MONGO_URL: mongodb://mongodb-0.mongodb.default.svc.cluster.local:27017
-
 mongodb:
-  image: mongo:6.0
+  image: manishshukla/mongodb:v1.0.54
   replicas: 1
   storage: 1Gi
