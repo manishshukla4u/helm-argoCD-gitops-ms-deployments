@@ -5,56 +5,76 @@ on:
   push:
     branches:
       - main
+      - test
 
 jobs:
   build-and-push-images:
+    if: github.event.head_commit.author.name != 'GitOps Bot'
     runs-on: ubuntu-latest
     env:
       VERSION: v1.0.${{ github.run_number }}
-      DOCKER_REGISTRY: manishshukla
+      DOCKER_NAMESPACE: manishshukla
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Pull, tag, and push images
         run: |
           docker pull nginx:latest
-          docker tag nginx:latest $DOCKER_REGISTRY/frontend:$VERSION
-          docker push $DOCKER_REGISTRY/frontend:$VERSION
+          docker tag nginx:latest $DOCKER_NAMESPACE/frontend:$VERSION
+          docker push $DOCKER_NAMESPACE/frontend:$VERSION
 
           docker pull node:18
-          docker tag node:18 $DOCKER_REGISTRY/backend:$VERSION
-          docker push $DOCKER_REGISTRY/backend:$VERSION
+          docker tag node:18 $DOCKER_NAMESPACE/backend:$VERSION
+          docker push $DOCKER_NAMESPACE/backend:$VERSION
 
           docker pull mongo:6.0
-          docker tag mongo:6.0 $DOCKER_REGISTRY/mongodb:$VERSION
-          docker push $DOCKER_REGISTRY/mongodb:$VERSION
+          docker tag mongo:6.0 $DOCKER_NAMESPACE/mongodb:$VERSION
+          docker push $DOCKER_NAMESPACE/mongodb:$VERSION
 
   update-values:
+    if: github.event.head_commit.author.name != 'GitOps Bot'
     runs-on: ubuntu-latest
     needs: build-and-push-images
+    env:
+      VERSION: v1.0.${{ github.run_number }}
+      DOCKER_NAMESPACE: manishshukla
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
 
       - name: Install yq
         run: |
           sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
           sudo chmod +x /usr/bin/yq
 
-      - name: Update image tags in values.yaml
+      - name: Determine environment and update values.yaml
         run: |
-          yq -i '.frontend.image = "${{ env.DOCKER_REGISTRY }}/frontend:${{ env.VERSION }}"' values.yaml
-          yq -i '.backend.image = "${{ env.DOCKER_REGISTRY }}/backend:${{ env.VERSION }}"' values.yaml
-          yq -i '.mongodb.image = "${{ env.DOCKER_REGISTRY }}/mongodb:${{ env.VERSION }}"' values.yaml
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              VALUES_FILE="values/prod/values.yaml"
+            else
+              VALUES_FILE="values/dev/values.yaml"
+            fi
+
+            yq -i '.frontend.image = "'"${DOCKER_NAMESPACE}/frontend:${VERSION}"'"' $VALUES_FILE
+            yq -i '.backend.image = "'"${DOCKER_NAMESPACE}/backend:${VERSION}"'"' $VALUES_FILE
+            yq -i '.mongodb.image = "'"${DOCKER_NAMESPACE}/mongodb:${VERSION}"'"' $VALUES_FILE
 
       - name: Commit and push changes
         run: |
           git config user.name "GitOps Bot"
           git config user.email "gitops@example.com"
-          git add values.yaml
-          git commit -m "Update image tags to $VERSION"
-          git push
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }}
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m "Update image tags to $VERSION"
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo "No changes to commit."
+          fi
+
