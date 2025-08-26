@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-and-push-images:
-    if: github.actor != 'GitOps Bot
+    if: github.actor != 'GitOps Bot'
     runs-on: ubuntu-latest
     env:
       VERSION: v1.0.${{ github.run_number }}
