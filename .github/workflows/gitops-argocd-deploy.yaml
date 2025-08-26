@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-and-push-images:
-    if: github.actor != 'GitOps Bot'
+    if: github.event.head_commit.author.name != 'GitOps Bot'
     runs-on: ubuntu-latest
     env:
       VERSION: v1.0.${{ github.run_number }}
@@ -36,7 +36,7 @@ jobs:
           docker push $DOCKER_NAMESPACE/mongodb:$VERSION
 
   update-values:
-    if: github.actor != 'GitOps Bot'
+    if: github.event.head_commit.author.name != 'GitOps Bot'
     runs-on: ubuntu-latest
     needs: build-and-push-images
     env:
