@@ -100,7 +100,7 @@ jobs:
             --token=${K8S_TOKEN}
           kubectl config set-context gitops-context \
             --cluster=aks-cluster \
-            --user=gitops-context
+            --user=gitops-user
           kubectl config use-context gitops-context
         env:
           K8S_SERVER: ${{ secrets.K8S_SERVER }}
