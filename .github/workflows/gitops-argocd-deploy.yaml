@@ -93,15 +93,15 @@ jobs:
 
       - name: Configure Kubeconfig
         run: |
-          kubectl config set-cluster cluster \
+          kubectl config set-cluster aks-cluster \
             --server=${K8S_SERVER} \
-            --insecure-skip-tls-verify=true \
-          kubectl config set-credentials user \
+            --insecure-skip-tls-verify=true
+          kubectl config set-credentials gitops-user \
             --token=${K8S_TOKEN}
-          kubectl config set-context ctx \
-            --cluster=cluster \
-            --user=user
-          kubectl config use-context ctx
+          kubectl config set-context gitops-context \
+            --cluster=aks-cluster \
+            --user=gitops-context
+          kubectl config use-context gitops-context
         env:
           K8S_SERVER: ${{ secrets.K8S_SERVER }}
           K8S_TOKEN: ${{ secrets.K8S_TOKEN }}        #This is the bearer token used to authenticate with the cluster
