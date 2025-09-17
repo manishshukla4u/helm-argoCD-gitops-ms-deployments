@@ -55,7 +55,7 @@ jobs:
 
       - name: Determine environment and update values.yaml
         run: |
-            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            if [[ "${{ github.ref_name }}" == "main" ]]; then
               VALUES_FILE="values/prod/values.yaml"
             else
               VALUES_FILE="values/dev/values.yaml"

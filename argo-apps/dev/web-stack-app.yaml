@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/manishshukla4u/helm-argoCD-gitops-ms-deployments
-    targetRevision: main
+    targetRevision: test
     path: helm-charts/web-stack-app
     helm:
       valueFiles:
