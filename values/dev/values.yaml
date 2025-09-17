@@ -1,5 +1,5 @@
 frontend:
-  image: 'manishshukla/frontend:v1.0.73'
+  image: 'manishshukla/frontend:v1.0.77'
   replicas: 1
   service:
     type: ClusterIP
@@ -7,7 +7,7 @@ frontend:
     enabled: true
     host: dev-frontend.local
 backend:
-  image: 'manishshukla/backend:v1.0.73'
+  image: 'manishshukla/backend:v1.0.77'
   replicas: 1
   service:
     type: ClusterIP
@@ -17,6 +17,6 @@ backend:
   env:
     MONGO_URL: mongodb://mongodb-0.mongodb:27017
 mongodb:
-  image: 'manishshukla/mongodb:v1.0.73'
+  image: 'manishshukla/mongodb:v1.0.77'
   replicas: 1
   storage: 512Mi
