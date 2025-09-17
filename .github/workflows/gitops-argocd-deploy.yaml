@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Log in to Docker Hub
+      - name:  Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Pull, tag, and push images
@@ -55,7 +55,7 @@ jobs:
 
       - name: Determine environment and update values.yaml
         run: |
-            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            if [[ "${{ github.ref_name }}" == "main" ]]; then
               VALUES_FILE="values/prod/values.yaml"
             else
               VALUES_FILE="values/dev/values.yaml"
@@ -77,4 +77,36 @@ jobs:
           else
             echo "No changes to commit."
           fi
+
+  register-root-app:
+    if: github.event.head_commit.author.name != 'GitOps Bot'
+    runs-on: ubuntu-latest
+    needs: update-values
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.26.0'
+
+      - name: Configure Kubeconfig
+        run: |
+          kubectl config set-cluster aks-cluster \
+            --server=${K8S_SERVER} \
+            --insecure-skip-tls-verify=true
+          kubectl config set-credentials gitops-user \
+            --token=${K8S_TOKEN}
+          kubectl config set-context gitops-context \
+            --cluster=aks-cluster \
+            --user=gitops-user
+          kubectl config use-context gitops-context
+        env:
+          K8S_SERVER: ${{ secrets.K8S_SERVER }}
+          K8S_TOKEN: ${{ secrets.K8S_TOKEN }}        #This is the bearer token used to authenticate with the cluster
+
+      - name: Apply Root Argo CD Application
+        run: |
+          kubectl apply -n argocd -f argo-apps/root-app.yaml
 
