@@ -9,6 +9,8 @@ spec:
     repoURL: https://github.com/manishshukla4u/helm-argoCD-gitops-ms-deployments
     targetRevision: main
     path: argo-apps
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
