@@ -11,7 +11,7 @@ spec:
     path: helm-charts/web-stack-app
     helm:
       valueFiles:
-        - values/dev/values.yaml
+        - ../../values/dev/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
