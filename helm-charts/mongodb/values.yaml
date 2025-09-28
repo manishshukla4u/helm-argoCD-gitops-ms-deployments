@@ -1,5 +1,6 @@
-image: mongodb:latest
-replicaCount: 1
-service:
-  type: ClusterIP
-  port: 27017
+mongodb:
+  image: mongodb:latest
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 27017
