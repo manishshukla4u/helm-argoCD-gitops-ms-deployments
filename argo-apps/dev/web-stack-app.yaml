@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/manishshukla4u/helm-argoCD-gitops-ms-deployments
     targetRevision: test
-    path: helm-charts/web-stack-app
+    path: helm-charts/umbrella
     helm:
       valueFiles:
         - ../../values/dev/values.yaml

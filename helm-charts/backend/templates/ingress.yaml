@@ -1,7 +1,10 @@
+{{- if .Values.backend.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: backend
+  name: backend-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
     - host: {{ .Values.backend.ingress.host }}
@@ -13,4 +16,5 @@ spec:
               service:
                 name: backend
                 port:
-                  number: 80
+                  number: {{ .Values.backend.service.port }}
+{{- end }}
