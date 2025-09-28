@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.Name }}
+  name: mongodb
 spec:
   selector:
-    app: {{ .Chart.Name }}
+    app: mongodb
   ports:
     - protocol: TCP
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
-  type: {{ .Values.service.type }}
+      port: {{ .Values.mongodb.service.port }}
+      targetPort: {{ .Values.mongodb.service.port }}
+  type: {{ .Values.mongodb.service.type }}
