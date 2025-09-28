@@ -1,9 +1,14 @@
-image: backend:latest
-replicaCount: 1
-service:
-  type: ClusterIP
-  port: 4000
-ingress:
-  enabled: false
-env:
-  MONGO_URL: mongodb://mongodb:27017
+backend:
+  image: backend:latest
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 4000
+  ingress:
+    enabled: false
+  env:
+    MONGO_URL: mongodb://mongodb:27017  
+  ingress:
+      enabled: true
+      host: backend.local
+

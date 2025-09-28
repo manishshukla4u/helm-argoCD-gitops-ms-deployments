@@ -15,7 +15,7 @@ backend:
     enabled: true
     host: dev-backend.local
   env:
-    MONGO_URL: mongodb://mongodb-0.mongodb:27017
+    MONGO_URL: mongodb://mongodb-0.mongodb.dev.svc.cluster.local:27017
 mongodb:
   image: 'manishshukla/mongodb:v1.0.85'
   replicas: 1

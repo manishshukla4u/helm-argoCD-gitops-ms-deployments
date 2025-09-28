@@ -1,6 +1,6 @@
 frontend:
   image: manishshukla/frontend:v1.0.54
-  replicas: 2
+  replicas: 1
   service:
     type: ClusterIP
   ingress:
@@ -8,15 +8,15 @@ frontend:
     host: prod-frontend.local
 backend:
   image: manishshukla/backend:v1.0.54
-  replicas: 2
+  replicas: 1
   service:
     type: ClusterIP
   ingress:
     enabled: true
     host: prod-backend.local
   env:
-    MONGO_URL: mongodb://mongodb-0.mongodb:27017
+    MONGO_URL: mongodb://mongodb-0.mongodb.prod.svc.cluster.local:27017
 mongodb:
   image: manishshukla/mongodb:v1.0.54
   replicas: 1
-  storage: 1Gi
+  storage: 512Mi
