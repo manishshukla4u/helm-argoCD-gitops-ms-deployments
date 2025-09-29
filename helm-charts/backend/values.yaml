@@ -1,12 +1,13 @@
 backend:
-  image: backend:latest
+  image:
+    repository: backend
+    tag: latest
   replicaCount: 1
   service:
     type: ClusterIP
     port: 4000
   env:
-    MONGO_URL: mongodb://mongodb:27017  
+    MONGO_URL: mongodb://mongodb:27017
   ingress:
-      enabled: true
-      host: backend.local
-
+    enabled: true
+    host: backend.local

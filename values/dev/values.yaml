@@ -1,5 +1,7 @@
 frontend:
-  image: 'manishshukla/frontend:v1.0.89'
+  image:
+    repository: manishshukla/frontend
+    tag: v1.0.95
   replicaCount: 1
   service:
     type: ClusterIP
@@ -8,7 +10,9 @@ frontend:
     enabled: true
     host: dev-frontend.local
 backend:
-  image: 'manishshukla/backend:v1.0.89'
+  image:
+    repository: manishshukla/backend
+    tag: v1.0.95
   replicaCount: 1
   service:
     type: ClusterIP
@@ -19,7 +23,9 @@ backend:
   env:
     MONGO_URL: mongodb://mongodb.dev.svc.cluster.local:27017
 mongodb:
-  image: 'manishshukla/mongodb:v1.0.89'
+  image:
+    repository: manishshukla/mongodb
+    tag: v1.0.95
   replicaCount: 1
   service:
     type: ClusterIP
