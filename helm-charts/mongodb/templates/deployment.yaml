@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: {{ .Values.mongodb.image }}
+          image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
           ports:
             - containerPort: {{ .Values.mongodb.service.port }}

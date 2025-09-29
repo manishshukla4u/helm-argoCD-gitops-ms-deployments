@@ -1,5 +1,7 @@
 mongodb:
-  image: mongodb:latest
+  image:
+    repository: mongodb
+    tag: latest
   replicaCount: 1
   service:
     type: ClusterIP
