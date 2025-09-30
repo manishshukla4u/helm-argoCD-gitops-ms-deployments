@@ -13,4 +13,4 @@ env:
 
 ingress:
   enabled: true
-  host: backend.local
+  path: /backend

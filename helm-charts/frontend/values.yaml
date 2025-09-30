@@ -10,4 +10,4 @@ service:
 
 ingress:
   enabled: true
-  host: frontend.local
+  path: /frontend
