@@ -1,8 +1,9 @@
-mongodb:
-  image:
-    repository: mongodb
-    tag: latest
-  replicaCount: 1
-  service:
-    type: ClusterIP
-    port: 27017
+image:
+  repository: mongodb
+  tag: latest
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 27017

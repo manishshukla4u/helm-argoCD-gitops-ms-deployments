@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: mongodb
 spec:
-  replicas: {{ .Values.mongodb.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: mongodb
@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: {{ .Values.mongodb.service.port }}
+            - containerPort: {{ .Values.service.port }}

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backend
 spec:
-  replicas: {{ .Values.backend.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: backend
@@ -14,9 +14,9 @@ spec:
     spec:
       containers:
         - name: backend
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: {{ .Values.backend.service.port }}
+            - containerPort: {{ .Values.service.port }}
           env:
             - name: MONGO_URL
-              value: "{{ .Values.backend.env.MONGO_URL }}"
+              value: "{{ .Values.env.MONGO_URL }}"

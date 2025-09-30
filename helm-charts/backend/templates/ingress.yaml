@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: {{ .Values.backend.ingress.host }}
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
           - path: /
@@ -16,5 +16,5 @@ spec:
               service:
                 name: backend
                 port:
-                  number: {{ .Values.backend.service.port }}
+                  number: {{ .Values.service.port }}
 {{- end }}
