@@ -10,7 +10,7 @@ backend:
     MONGO_URL: mongodb://mongodb.dev.svc.cluster.local:27017
   ingress:
     enabled: true
-    host: dev-backend.local
+    path: /backend
 
 frontend:
   image:
@@ -22,7 +22,7 @@ frontend:
     port: 80
   ingress:
     enabled: true
-    host: dev-frontend.local
+    path: /frontend
 
 mongodb:
   image:
