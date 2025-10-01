@@ -1,5 +1,22 @@
 <!DOCTYPE html>
 <html>
-<head><title>Frontend</title></head>
-<body><h1>Welcome to the Frontend</h1></body>
+<head>
+  <title>Messages</title>
+</head>
+<body>
+  <h1>Messages Board</h1>
+  <ul id="messages"></ul>
+  <script>
+    fetch('/backend/messages')
+      .then(r => r.json())
+      .then(data => {
+        const ul = document.getElementById('messages');
+        data.forEach(msg => {
+          const li = document.createElement('li');
+          li.textContent = msg.text;
+          ul.appendChild(li);
+        });
+      });
+  </script>
+</body>
 </html>

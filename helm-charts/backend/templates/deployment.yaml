@@ -20,3 +20,15 @@ spec:
           env:
             - name: MONGO_URL
               value: "{{ .Values.env.MONGO_URL }}"
+          livenessProbe:
+            httpGet:
+              path: /messages
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /messages
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
