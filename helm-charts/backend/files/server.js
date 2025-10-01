@@ -1,23 +1,17 @@
-const express = require('express');
-const { MongoClient } = require('mongodb');
-const app = express();
-const port = process.env.PORT || 4000;
-const mongoUrl = process.env.MONGO_URL || 'mongodb://mongodb:27017';
+app.use(express.json());
 
-app.get('/', async (req, res) => {
-  try {
-    const client = new MongoClient(mongoUrl);
-    await client.connect();
-    const db = client.db('test');
-    const collection = db.collection('messages');
-    const message = await collection.findOne() || { text: 'Hello from Backend' };
-    res.send(message.text);
-    await client.close();
-  } catch (err) {
-    res.status(500).send('Error connecting to MongoDB');
-  }
+app.get('/messages', async (req, res) => {
+  const client = new MongoClient(mongoUrl);
+  await client.connect();
+  const messages = await client.db('test').collection('messages').find().toArray();
+  await client.close();
+  res.json(messages);
 });
 
-app.listen(port, () => {
-  console.log(`Backend listening on port ${port}`);
+app.post('/messages', async (req, res) => {
+  const client = new MongoClient(mongoUrl);
+  await client.connect();
+  await client.db('test').collection('messages').insertOne(req.body);
+  await client.close();
+  res.status(201).send('Message added');
 });
