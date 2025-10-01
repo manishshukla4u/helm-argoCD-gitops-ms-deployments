@@ -24,11 +24,11 @@ spec:
             httpGet:
               path: /messages
               port: {{ .Values.service.port }}
-            initialDelaySeconds: 10
+            initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /messages
               port: {{ .Values.service.port }}
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            initialDelaySeconds: 20
+            periodSeconds: 10
