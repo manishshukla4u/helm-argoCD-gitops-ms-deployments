@@ -1,7 +1,7 @@
 frontend:
   image:
     repository: manishshukla/frontend
-    tag: v1.0.113
+    tag: v1.0.116
   replicaCount: 1
   service:
     type: ClusterIP
@@ -12,7 +12,7 @@ frontend:
 backend:
   image:
     repository: manishshukla/backend
-    tag: v1.0.113
+    tag: v1.0.116
   replicaCount: 1
   service:
     type: ClusterIP
@@ -25,7 +25,7 @@ backend:
 mongodb:
   image:
     repository: manishshukla/mongodb
-    tag: v1.0.113
+    tag: v1.0.116
   replicaCount: 1
   service:
     type: ClusterIP
