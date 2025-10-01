@@ -7,7 +7,7 @@
   <h1>Messages Board</h1>
   <ul id="messages"></ul>
   <script>
-    fetch('/backend/messages')
+    fetch('/messages')
       .then(r => r.json())
       .then(data => {
         const ul = document.getElementById('messages');
