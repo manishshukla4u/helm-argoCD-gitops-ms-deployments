@@ -98,7 +98,7 @@
     }
 
     function loadMessages() {
-      fetch('/backend/messages')
+      fetch('/messages')
         .then(r => r.json())
         .then(data => {
           messagesUl.innerHTML = '';
