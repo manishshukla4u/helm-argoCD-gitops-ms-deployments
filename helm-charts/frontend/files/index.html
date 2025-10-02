@@ -92,13 +92,15 @@
     const form = document.getElementById('messageForm');
     const input = document.getElementById('messageInput');
 
+    const BACKEND_URL = 'http://backend:4000/messages'; // <-- point directly to backend service
+
     function formatDate(dateStr) {
       const date = new Date(dateStr);
-      return date.toLocaleString(); // human-friendly time
+      return date.toLocaleString();
     }
 
     function loadMessages() {
-      fetch('/messages')
+      fetch(BACKEND_URL)
         .then(r => r.json())
         .then(data => {
           messagesUl.innerHTML = '';
@@ -108,7 +110,8 @@
                             <span class="time">${msg.createdAt ? formatDate(msg.createdAt) : ''}</span>`;
             messagesUl.appendChild(li);
           });
-        });
+        })
+        .catch(err => console.error('Error loading messages:', err));
     }
 
     form.addEventListener('submit', (e) => {
@@ -116,7 +119,7 @@
       const newMessage = input.value.trim();
       if (!newMessage) return;
 
-      fetch('/backend/messages', {
+      fetch(BACKEND_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: newMessage })
@@ -128,7 +131,8 @@
         } else {
           alert('Failed to add message');
         }
-      });
+      })
+      .catch(err => console.error('Error adding message:', err));
     });
 
     loadMessages();
