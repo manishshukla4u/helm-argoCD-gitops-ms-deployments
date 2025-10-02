@@ -26,7 +26,13 @@ app.post('/messages', async (req, res) => {
   try {
     const client = new MongoClient(mongoUrl);
     await client.connect();
-    await client.db('test').collection('messages').insertOne(req.body);
+
+    const message = {
+      text: req.body.text,
+      createdAt: new Date() // add timestamp
+    };
+
+    await client.db('test').collection('messages').insertOne(message);
     await client.close();
     res.status(201).send('Message added');
   } catch (err) {

@@ -1,22 +1,137 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Messages</title>
+  <title>Messages Board</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #messages {
+      list-style-type: none;
+      padding: 0;
+      width: 500px;
+      margin-bottom: 20px;
+    }
+
+    #messages li {
+      background: #fff;
+      margin: 8px 0;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .text {
+      font-size: 15px;
+      color: #333;
+    }
+
+    .time {
+      font-size: 12px;
+      color: #666;
+      margin-left: 10px;
+      white-space: nowrap;
+    }
+
+    form {
+      display: flex;
+      width: 500px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px 0 0 8px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: #0078d7;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005ea3;
+    }
+  </style>
 </head>
 <body>
   <h1>Messages Board</h1>
+
+  <!-- Messages list -->
   <ul id="messages"></ul>
+
+  <!-- Form to add new messages -->
+  <form id="messageForm">
+    <input type="text" id="messageInput" placeholder="Enter a message" required>
+    <button type="submit">Add</button>
+  </form>
+
   <script>
-    fetch('/messages')
-      .then(r => r.json())
-      .then(data => {
-        const ul = document.getElementById('messages');
-        data.forEach(msg => {
-          const li = document.createElement('li');
-          li.textContent = msg.text;
-          ul.appendChild(li);
+    const messagesUl = document.getElementById('messages');
+    const form = document.getElementById('messageForm');
+    const input = document.getElementById('messageInput');
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleString(); // human-friendly time
+    }
+
+    function loadMessages() {
+      fetch('/backend/messages')
+        .then(r => r.json())
+        .then(data => {
+          messagesUl.innerHTML = '';
+          data.forEach(msg => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="text">${msg.text}</span>
+                            <span class="time">${msg.createdAt ? formatDate(msg.createdAt) : ''}</span>`;
+            messagesUl.appendChild(li);
+          });
         });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newMessage = input.value.trim();
+      if (!newMessage) return;
+
+      fetch('/backend/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: newMessage })
+      })
+      .then(res => {
+        if (res.ok) {
+          input.value = '';
+          loadMessages();
+        } else {
+          alert('Failed to add message');
+        }
       });
+    });
+
+    loadMessages();
   </script>
 </body>
 </html>
