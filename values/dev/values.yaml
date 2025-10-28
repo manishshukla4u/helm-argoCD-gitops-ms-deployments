@@ -8,7 +8,6 @@ frontend:
     port: 80
   ingress:
     enabled: true
-    path: /frontend
 backend:
   image:
     repository: manishshukla/backend
@@ -19,7 +18,6 @@ backend:
     port: 4000
   ingress:
     enabled: true
-    path: /backend
   env:
     MONGO_URL: mongodb://mongodb.dev.svc.cluster.local:27017
 mongodb:
