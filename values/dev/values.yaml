@@ -1,31 +1,29 @@
 frontend:
   image:
     repository: manishshukla/frontend
-    tag: v1.0.137
+    tag: v1.0.140
   replicaCount: 1
   service:
     type: ClusterIP
     port: 80
   ingress:
     enabled: true
-    path: /frontend
 backend:
   image:
     repository: manishshukla/backend
-    tag: v1.0.137
+    tag: v1.0.140
   replicaCount: 1
   service:
     type: ClusterIP
     port: 4000
   ingress:
     enabled: true
-    path: /backend
   env:
     MONGO_URL: mongodb://mongodb.dev.svc.cluster.local:27017
 mongodb:
   image:
     repository: manishshukla/mongodb
-    tag: v1.0.137
+    tag: v1.0.140
   replicaCount: 1
   service:
     type: ClusterIP
